@@ -63,10 +63,27 @@ class Database {
         return db.promise().query(sql);
     }
 
+    getEmployeesbyid(manOrDept, id){
+        var sql = "";
+        if (manOrDept === "manager"){
+            sql = 'SELECT * FROM employee WHERE manager_id = ?';
+        }
+        if (manOrDept === "department"){
+            sql = 'SELECT employee.id, first_name, last_name, role_id, manager_id FROM employee inner join role on employee.role_id = role.id inner join department on role.department_id = department.id where department.id = ?';
+        }
+        
+        return db.promise().query(sql, id);
+    }
+
     getEmployeeId(firstname, lastname){
         const sql = 'SELECT id FROM employee WHERE first_name = ? && last_name = ?'
         const params = [firstname, lastname];
         return db.promise().query(sql, params);
+    }
+
+    getEmployeeSalaries(department){
+        const sql = 'SELECT salary FROM employee inner join role on employee.role_id = role.id inner join department on role.department_id = department.id where department.id = ?'
+        return db.promise().query(sql, department);
     }
 
     addDepartment(name) {
@@ -86,8 +103,31 @@ class Database {
         return db.promise().query(sql, params);
     }
 
-    updateEmployee() {
-        return
+    updateEmployeeRole(employee, role) {
+        const sql = 'UPDATE employee SET role_id = ? WHERE id = ?';
+        const params = [role, employee];
+        return db.promise().query(sql, params);
+    }
+
+    updateEmployeeManager(employee, manager) {
+        const sql = 'UPDATE employee SET manager_id = ? WHERE id = ?';
+        const params = [manager, employee];
+        return db.promise().query(sql, params);
+    }
+
+    deleteDepartment(department){
+        const sql = 'DELETE FROM department WHERE id = ?';
+        return db.promise().query(sql, department);
+    }
+
+    deleteRole(role){
+        const sql = 'DELETE FROM role WHERE id = ?';
+        return db.promise().query(sql, role);
+    }
+
+    deleteEmployee(employee){
+        const sql = 'DELETE FROM employee WHERE id = ?';
+        return db.promise().query(sql, employee);
     }
 }
 

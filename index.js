@@ -319,6 +319,7 @@ function init() {
                 var empId;
                 var fn;
                 var ln;
+
                 currentDb.getRoles()
                     .then(([rolerows, rolefields]) => {
                         rolerows.forEach(element => {
@@ -494,7 +495,33 @@ function init() {
                             });
                     });
             }
-            else if (choice.menu === 'Delete Employee') { }
+            else if (choice.menu === 'Delete Employee') { 
+                var empArr = [];
+                var empId;
+                var fn;
+                var ln;
+
+                currentDb.getEmployees()
+                    .then(([emprows, empfields]) => {
+                        emprows.forEach(element => {
+                            empArr.push(element.first_name + " " + element.last_name);
+                        });
+                        displayEmployees(empArr)
+                            .then(emp => {
+                                [fn, ln] = emp.employee.split(' ');
+                                //console.log(fn);
+                                currentDb.getEmployeeId(fn, ln)
+                                    .then(([eidrows, eidfields]) => {
+                                        empId = eidrows[0].id;                                       
+                                        currentDb.deleteEmployee(empId)
+                                            .then(([rows, fields]) => {
+                                                console.log("Deleted "+emp.employee+"!");
+                                                init();
+                                            });
+                                    });
+                            });
+                    });
+            }
             else if (choice.menu === 'View Total Salary of Department') { }
         });
 }

@@ -522,7 +522,33 @@ function init() {
                             });
                     });
             }
-            else if (choice.menu === 'View Total Salary of Department') { }
+            else if (choice.menu === 'View Total Salary of Department') { 
+                var depArr = [];
+                var depId;
+                var totSalary = 0;
+
+                currentDb.getDepartments()
+                    .then(([deprows, depfields]) => {
+                        deprows.forEach(element => {
+                            depArr.push(element.name);
+                        });
+                        displayDepartments(depArr)
+                            .then(dep => {
+                                currentDb.getDepartmentId(dep.department)
+                                    .then(([didrows, didfields]) => {
+                                        depId = didrows[0].id;
+                                        currentDb.getEmployeeSalaries(depId)
+                                            .then(([rows, fields]) => {
+                                                rows.forEach(element =>{
+                                                    totSalary = totSalary + parseInt(element.salary);
+                                                });
+                                                console.log("Total Salary is: "+totSalary);
+                                                init();
+                                            });
+                                    });
+                            });
+                    });
+            }
         });
 }
 

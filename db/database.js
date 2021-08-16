@@ -41,7 +41,7 @@ class Database {
     }
 
     getRoles() {
-        const sql = 'SELECT * FROM role'
+        const sql = 'SELECT * FROM role';
 
         return db.promise().query(sql);
 

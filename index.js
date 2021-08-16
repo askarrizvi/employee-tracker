@@ -448,8 +448,52 @@ function init() {
                             });
                     });
             }
-            else if (choice.menu === 'Delete Department') { }
-            else if (choice.menu === 'Delete Role') { }
+            else if (choice.menu === 'Delete Department') { 
+                var depArr = [];
+                var depId;
+
+                currentDb.getDepartments()
+                    .then(([deprows, depfields]) => {
+                        deprows.forEach(element => {
+                            depArr.push(element.name);
+                        });
+                        displayDepartments(depArr)
+                            .then(dep => {
+                                currentDb.getDepartmentId(dep.department)
+                                    .then(([didrows, didfields]) => {
+                                        depId = didrows[0].id;
+                                        currentDb.deleteDepartment(depId)
+                                            .then(([rows, fields]) => {
+                                                console.log("Deleted "+dep.department+"!");
+                                                init();
+                                            });
+                                    });
+                            });
+                    });
+            }
+            else if (choice.menu === 'Delete Role') { 
+                var roleArr = [];
+                var roleId;
+
+                currentDb.getRoles()
+                    .then(([rolerows, rolefields]) => {
+                        rolerows.forEach(element => {
+                            roleArr.push(element.title);
+                        });
+                        displayRoles(roleArr)
+                            .then(rol => {
+                                currentDb.getRoleId(rol.role)
+                                    .then(([ridrows, ridfields]) => {
+                                        roleId = ridrows[0].id;
+                                        currentDb.deleteRole(roleId)
+                                            .then(([rows, fields]) => {
+                                                console.log("Deleted "+rol.role+"!");
+                                                init();
+                                            });
+                                    });
+                            });
+                    });
+            }
             else if (choice.menu === 'Delete Employee') { }
             else if (choice.menu === 'View Total Salary of Department') { }
         });

@@ -4,9 +4,11 @@ const Database = require('./db/database');
 const cTable = require('console.table');
 const { Console } = require('console');
 
+//Array with the main menu choices
 const choices = ['View All Departments', 'View All Roles', 'View All Employees', 'Add a Department', 'Add a Role', 'Add An Employee', 'Update An Employee Role',
     "Update Employee's Manager", 'View Employees by Manager', 'View Employees by Department', 'Delete Department', 'Delete Role', 'Delete Employee', 'View Total Salary of Department'];
 
+//Main menu with inquirer list
 const promptMenu = () => {
     return inquirer.prompt([
         {
@@ -18,6 +20,7 @@ const promptMenu = () => {
     ])
 };
 
+//Inquirer prompts for adding a new department
 const addDepartment = () => {
     return inquirer.prompt([
         {
@@ -36,6 +39,7 @@ const addDepartment = () => {
     ])
 };
 
+//Inquirer prompts for adding a new Role
 function addRole(departments) {
     return inquirer.prompt([
         {
@@ -73,6 +77,7 @@ function addRole(departments) {
     ]);
 }
 
+//Inquirer prompts for adding a new employee
 function addEmployee(roles, managers) {
     return inquirer.prompt([
         {
@@ -116,6 +121,7 @@ function addEmployee(roles, managers) {
     ]);
 }
 
+//Inquirer prompts for changing the employee's role
 function changeEmployeeRole(roles, employees) {
     return inquirer.prompt([
         {
@@ -133,6 +139,7 @@ function changeEmployeeRole(roles, employees) {
     ]);
 }
 
+//Inquirer prompts for changing the employee's manager
 function changeEmployeeManager(employees) {
     return inquirer.prompt([
         {
@@ -150,6 +157,7 @@ function changeEmployeeManager(employees) {
     ]);
 }
 
+//Inquirer prompt that will show all employees but text will ask to select a manager
 function displayManagers(managers) {
     return inquirer.prompt([
         {
@@ -161,6 +169,7 @@ function displayManagers(managers) {
     ]);
 }
 
+//Inquirer prompt that will show all employees
 function displayEmployees(employees) {
     return inquirer.prompt([
         {
@@ -172,6 +181,7 @@ function displayEmployees(employees) {
     ]);
 }
 
+//Inquirer prompt that will show all departments
 function displayDepartments(departments) {
     return inquirer.prompt([
         {
@@ -183,6 +193,7 @@ function displayDepartments(departments) {
     ]);
 }
 
+//Inquirer prompt that will show all Roles
 function displayRoles(roles) {
     return inquirer.prompt([
         {
@@ -194,6 +205,7 @@ function displayRoles(roles) {
     ]);
 }
 
+//Splash Screen when starting a new instance of the application
 function splashScreen() {
     console.log(`
 -------------------------------------
@@ -202,6 +214,9 @@ function splashScreen() {
     `);
 }
 
+//Init function that contains the calls for the different asynchronous functions.
+//The function will check to see the user's choice and will call the correct database functions
+//and other helper functions.
 function init() {
     currentDb = new Database();
     promptMenu()
@@ -425,7 +440,7 @@ function init() {
                             });
                     });
             }
-            else if (choice.menu === 'View Employees by Department') { 
+            else if (choice.menu === 'View Employees by Department') {
                 var depArr = [];
                 var depId;
 
@@ -449,7 +464,7 @@ function init() {
                             });
                     });
             }
-            else if (choice.menu === 'Delete Department') { 
+            else if (choice.menu === 'Delete Department') {
                 var depArr = [];
                 var depId;
 
@@ -465,14 +480,14 @@ function init() {
                                         depId = didrows[0].id;
                                         currentDb.deleteDepartment(depId)
                                             .then(([rows, fields]) => {
-                                                console.log("Deleted "+dep.department+"!");
+                                                console.log("Deleted " + dep.department + "!");
                                                 init();
                                             });
                                     });
                             });
                     });
             }
-            else if (choice.menu === 'Delete Role') { 
+            else if (choice.menu === 'Delete Role') {
                 var roleArr = [];
                 var roleId;
 
@@ -488,14 +503,14 @@ function init() {
                                         roleId = ridrows[0].id;
                                         currentDb.deleteRole(roleId)
                                             .then(([rows, fields]) => {
-                                                console.log("Deleted "+rol.role+"!");
+                                                console.log("Deleted " + rol.role + "!");
                                                 init();
                                             });
                                     });
                             });
                     });
             }
-            else if (choice.menu === 'Delete Employee') { 
+            else if (choice.menu === 'Delete Employee') {
                 var empArr = [];
                 var empId;
                 var fn;
@@ -512,17 +527,17 @@ function init() {
                                 //console.log(fn);
                                 currentDb.getEmployeeId(fn, ln)
                                     .then(([eidrows, eidfields]) => {
-                                        empId = eidrows[0].id;                                       
+                                        empId = eidrows[0].id;
                                         currentDb.deleteEmployee(empId)
                                             .then(([rows, fields]) => {
-                                                console.log("Deleted "+emp.employee+"!");
+                                                console.log("Deleted " + emp.employee + "!");
                                                 init();
                                             });
                                     });
                             });
                     });
             }
-            else if (choice.menu === 'View Total Salary of Department') { 
+            else if (choice.menu === 'View Total Salary of Department') {
                 var depArr = [];
                 var depId;
                 var totSalary = 0;
@@ -539,10 +554,10 @@ function init() {
                                         depId = didrows[0].id;
                                         currentDb.getEmployeeSalaries(depId)
                                             .then(([rows, fields]) => {
-                                                rows.forEach(element =>{
+                                                rows.forEach(element => {
                                                     totSalary = totSalary + parseInt(element.salary);
                                                 });
-                                                console.log("Total Salary is: "+totSalary);
+                                                console.log("Total Salary is: " + totSalary);
                                                 init();
                                             });
                                     });
